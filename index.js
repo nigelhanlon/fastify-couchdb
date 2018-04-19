@@ -3,11 +3,18 @@
 const fp = require('fastify-plugin')
 const nano = require('nano')
 
-async function fastifyCouchDB (fastify, options, next) {
-  if (fastify.couch) {
+function fastifyCouchDB (fastify, options, next) {
+  if (fastify.hasDecorator('couch')) {
     next(new Error('fastify-couchdb has already registered'))
   } else {
-    fastify.couch = await nano(options)
+    const couch = nano(options)
+    fastify.decorate('couch', couch)
+
+    if (couch.config.db) {
+      console.log(couch.use)
+      const defaultDB = couch.use(couch.config.db)
+      fastify.decorateRequest('db', defaultDB, ['couch'])
+    }
   }
 
   next()
