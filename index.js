@@ -3,11 +3,11 @@
 const fp = require('fastify-plugin')
 const nano = require('nano')
 
-function fastifyCouchDB (fastify, options, next) {
+async function fastifyCouchDB (fastify, options, next) {
   if (fastify.couch) {
     next(new Error('fastify-couchdb has already registered'))
   } else {
-    fastify.couch = nano(options)
+    fastify.couch = await nano(options)
   }
 
   next()
