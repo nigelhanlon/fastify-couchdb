@@ -22,25 +22,11 @@ fastify.register(require('fastify-couchdb'), {
   url: 'http://localhost:5984'
 })
 
-// Using Callbacks
 fastify.get('/rabbit', (req, reply) => {
   const rabbits = fastify.couch.db.use('rabbits')
   rabbits.get('whiterabbit', function(err, body) {
     reply.send(err || body)
   });
-
-})
-
-// Or Using Async/Await
-fastify.get('/rabbit', async (req, reply) => {
-  try {
-    const rabbits = fastify.couch.db.use('rabbits');
-    const body = rabbits.get('whiterabbit')
-    reply.send(body);
-  }
-  catch(err) {
-    reply.send(err);
-  }
 
 })
 ```
@@ -53,7 +39,6 @@ fastify.register(require('fastify-couchdb'), {
   url: 'http://localhost:5984'
 })
 
-// Or Using Async/Await
 fastify.get('/rabbit', async (req, reply) => {
   try {
     const rabbits = fastify.couch.db.use('rabbits');
