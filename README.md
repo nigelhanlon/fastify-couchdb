@@ -42,7 +42,7 @@ fastify.register(require('fastify-couchdb'), {
 fastify.get('/rabbit', async (req, reply) => {
   try {
     const rabbits = fastify.couch.db.use('rabbits');
-    const body = rabbits.get('whiterabbit')
+    const body = await rabbits.get('whiterabbit')
     reply.send(body);
   }
   catch(err) {

@@ -1,0 +1,13 @@
+language: node_js
+
+node_js:
+  - "9"
+  - "8"
+
+services:
+  - couchdb
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
