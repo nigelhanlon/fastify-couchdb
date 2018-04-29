@@ -9,12 +9,7 @@ function fastifyCouchDB (fastify, options, next) {
   } else {
     const couch = nano(options)
     fastify.decorate('couch', couch)
-
-    if (couch.config.db) {
-      console.log(couch.use)
-      const defaultDB = couch.use(couch.config.db)
-      fastify.decorateRequest('db', defaultDB, ['couch'])
-    }
+    fastify.decorateRequest('db', couch)
   }
 
   next()

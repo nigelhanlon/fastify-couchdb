@@ -4,7 +4,9 @@ const t = require('tap')
 const test = t.test
 const Fastify = require('fastify')
 const fastifyCouchDB = require('./index')
-const nano = require('nano')
+
+const COUCHDB_URL = 'http://localhost:5984'
+const TEST_DB = 'test'
 
 test('fastify.couchdb namespace should exist', t => {
   t.plan(2)
@@ -12,7 +14,7 @@ test('fastify.couchdb namespace should exist', t => {
   const fastify = Fastify()
 
   fastify.register(fastifyCouchDB, {
-    url: 'http://localhost:5984'
+    url: COUCHDB_URL
   })
 
   fastify.ready(err => {
@@ -28,14 +30,14 @@ test('should be able to connect and perform a query', t => {
   const fastify = Fastify()
 
   fastify.register(fastifyCouchDB, {
-    url: 'http://localhost:5984'
+    url: COUCHDB_URL
   })
 
   fastify.ready(async err => {
     t.error(err)
 
-    await fastify.couch.db.create('test')
-    const mydb = fastify.couch.db.use('test')
+    await fastify.couch.db.create(TEST_DB)
+    const mydb = fastify.couch.db.use(TEST_DB)
     const { body } = await mydb.insert({ happy: true }, 'rabbit')
     t.deepEqual(JSON.parse(body), {'happy': true})
 
@@ -43,33 +45,20 @@ test('should be able to connect and perform a query', t => {
   })
 })
 
-test('should expose a db key on the request object', async t => {
-  t.plan(1)
-
-  const couch = nano('http://localhost:5984')
-  await couch.db.create('reqtest')
-  const mydb = await couch.db.use('reqtest')
-  await mydb.insert({ green: true }, 'trees')
+test('should accept a default db to connect to', t => {
+  t.plan(2)
 
   const fastify = Fastify()
+
   fastify.register(fastifyCouchDB, {
-    url: 'http://localhost:5984/reqtest'
+    url: `${COUCHDB_URL}/${TEST_DB}`
   })
 
-  fastify.get('/', async function (req, reply) {
-    // t.ok(req.db)
-    const data = await req.db.get('trees')
-    reply(data)
-  })
+  fastify.ready(async err => {
+    t.error(err)
+    const { body } = await fastify.couch.insert({ happy: true, colour: 'white' }, 'rabbit')
+    t.deepEqual(JSON.parse(body), {happy: true, colour: 'white'})
 
-  try {
-    const { payload } = await fastify.inject({
-      method: 'GET',
-      url: '/',
-      payload: {}
-    })
-    console.log(payload)
-  } catch (err) {
-    t.fail(err)
-  }
+    fastify.close()
+  })
 })
