@@ -10,9 +10,9 @@ function fastifyCouchDB (fastify, options, next) {
     const couch = nano(options)
     fastify.decorate('couch', couch)
     fastify.decorateRequest('db', couch)
-  }
 
-  next()
+    next()
+  }
 }
 
 module.exports = fp(fastifyCouchDB, {
