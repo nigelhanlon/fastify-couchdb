@@ -3,14 +3,14 @@
 const fp = require('fastify-plugin')
 const nano = require('nano')
 
-async function fastifyCouchDB (fastify, options, next) {
-  if (fastify.couch) {
+function fastifyCouchDB (fastify, options, next) {
+  if (fastify.hasDecorator('couch')) {
     next(new Error('fastify-couchdb has already registered'))
   } else {
-    fastify.couch = await nano(options)
+    const couch = nano(options)
+    fastify.decorate('couch', couch)
+    next()
   }
-
-  next()
 }
 
 module.exports = fp(fastifyCouchDB, {

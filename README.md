@@ -11,10 +11,21 @@ Under the hood the popular [nano](https://github.com/apache/couchdb-nano) module
 npm i fastify-couchdb --save
 ```
 ## Usage
-Add it to you project with `register` and you are done!
-This plugin will add the `couch` namespace in your Fastify instance which you can treat exactly like an instance of nano.
+Simply add it to your project with `register` and you're done!
 
-Example:
+When registering you can pass any [options](https://github.com/apache/nano#configuration) supported by `nano` to the plugin:
+
+```js
+  fastify.register(require('fastify-couchdb'), {
+    url: 'http://localhost:5984',
+    requestDefaults : { "proxy" : "http://someproxy" },
+    // etc
+  })
+```
+
+This plugin will add the `couch` namespace in your Fastify instance which you can treat exactly like an instance of nano. Inside your routes you can call `this.couch` to access the full range of nano's [methods documented here](https://github.com/apache/nano#getting-started).
+
+**Example**:
 ```js
 const fastify = require('fastify')
 
@@ -23,7 +34,7 @@ fastify.register(require('fastify-couchdb'), {
 })
 
 fastify.get('/rabbit', (req, reply) => {
-  const rabbits = fastify.couch.db.use('rabbits')
+  const rabbits = this.couch.db.use('rabbits')
   rabbits.get('whiterabbit', function(err, body) {
     reply.send(err || body)
   });
@@ -41,7 +52,7 @@ fastify.register(require('fastify-couchdb'), {
 
 fastify.get('/rabbit', async (req, reply) => {
   try {
-    const rabbits = fastify.couch.db.use('rabbits');
+    const rabbits = this.couch.db.use('rabbits');
     const body = await rabbits.get('whiterabbit')
     reply.send(body);
   }
