@@ -9,8 +9,6 @@ function fastifyCouchDB (fastify, options, next) {
   } else {
     const couch = nano(options)
     fastify.decorate('couch', couch)
-    fastify.decorateRequest('db', couch)
-
     next()
   }
 }
