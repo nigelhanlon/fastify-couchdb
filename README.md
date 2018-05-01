@@ -23,7 +23,7 @@ When registering you can pass any [options](https://github.com/apache/nano#confi
   })
 ```
 
-This plugin will add the `couch` namespace in your Fastify instance which you can treat exactly like an instance of nano. Inside your routes you can call `this.couch` to access the full range of nano's [methods documented here](https://github.com/apache/nano#getting-started).
+This plugin will add the `couch` namespace in your Fastify instance which you can treat exactly like an instance of nano. Inside your routes you can then access the full range of nano's [methods documented here](https://github.com/apache/nano#getting-started).
 
 **Example**:
 ```js
@@ -52,7 +52,7 @@ fastify.register(require('fastify-couchdb'), {
 
 fastify.get('/rabbit', async (req, reply) => {
   try {
-    const rabbits = this.couch.db.use('rabbits');
+    const rabbits = fastify.couch.db.use('rabbits');
     const body = await rabbits.get('whiterabbit')
     reply.send(body);
   }
