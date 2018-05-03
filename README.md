@@ -65,7 +65,7 @@ fastify.get('/rabbit', async (req, reply) => {
 
 ## Development and Testing
 
-First, start postgres with:
+First, start couchdb with:
 
 ```
 $ npm run couchdb
