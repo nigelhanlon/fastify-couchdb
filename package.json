@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "fastify-plugin": "^1.2.0",
-    "nano": "^7.0.0"
+    "nano": "^8.1.0"
   },
   "devDependencies": {
     "fastify": "^1.9.0",
